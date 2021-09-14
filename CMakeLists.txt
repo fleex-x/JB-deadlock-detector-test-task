@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(safe-mutex CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+
+add_compile_options(-Wall -Wextra -Werror)
+add_compile_options(-fsanitize=address -fsanitize=undefined)
+add_link_options(-fsanitize=address -fsanitize=undefined)
+
+find_package(Threads)
+include_directories(include)
+
+add_executable(safe-mutex-tests src/safe_mutex.cpp src/main.cpp)
+target_link_libraries(safe-mutex-tests ${CMAKE_THREAD_LIBS_INIT})
