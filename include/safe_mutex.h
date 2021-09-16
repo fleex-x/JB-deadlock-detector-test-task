@@ -6,8 +6,15 @@
 #include <optional>
 #include <cstddef>
 #include <atomic>
+#include <exception>
 
 namespace test_task {
+
+class deadlock_exception : public std::runtime_error {
+public:
+    using std::runtime_error::runtime_error; 
+    //https://stackoverflow.com/questions/7667701/reusable-constructors-c
+};
 
 class mutex_graph {
 private:

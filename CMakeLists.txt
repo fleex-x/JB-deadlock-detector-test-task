@@ -14,4 +14,5 @@ find_package(Threads)
 include_directories(include)
 
 add_executable(safe-mutex-tests src/safe_mutex.cpp src/main.cpp)
+target_compile_options(safe-mutex-tests PUBLIC -DSAFE_MUTEX_TESTS_)
 target_link_libraries(safe-mutex-tests ${CMAKE_THREAD_LIBS_INIT})

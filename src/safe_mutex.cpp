@@ -5,6 +5,7 @@
 #include <optional>
 #include <cstddef>
 #include <iostream>
+#include <exception>
 
 namespace test_task {
 
@@ -28,8 +29,12 @@ void mutex_graph::add_new_expectation(std::thread::id thread_id, std::uint64_t m
 	std::unique_lock l(m);
 	current_expectation[thread_id] = mutex_id;
 	if (exists_cycle(thread_id, thread_id)) {
-		std::cerr << "Deadlock is discovered" << std::endl;
-		exit(1);
+        #ifdef SAFE_MUTEX_TESTS_
+    	   throw std::runtime_error("Deadlock is discovered");
+        #else
+            std::cerr << "Deadlock is discovered" << std::endl;
+            std::exit(1);
+        #endif
 	}
 }
 
