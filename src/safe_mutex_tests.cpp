@@ -1,3 +1,4 @@
+//https://github.com/onqtam/doctest/tree/master/doc/markdown
 #include "safe_mutex.h"
 #include <condition_variable>
 #include <mutex>
@@ -45,6 +46,7 @@ TEST_CASE("Big possibility of deadlock-1") {
     safe_mutex m2;
     safe_mutex m3;
     safe_mutex m4;
+    std::atomic<std::size_t> counter = 0;
 
     std::thread t1([&]() {
         latch.arrive_and_wait();
@@ -53,6 +55,7 @@ TEST_CASE("Big possibility of deadlock-1") {
                 std::unique_lock l1(m1);
                 std::unique_lock l2(m2);
             } catch(deadlock_exception &) {
+                ++counter;
             }
         }
     });
@@ -63,6 +66,7 @@ TEST_CASE("Big possibility of deadlock-1") {
                 std::unique_lock l1(m2);
                 std::unique_lock l2(m3);
             } catch(deadlock_exception &) {
+                ++counter;
             }
         }
     });
@@ -73,6 +77,7 @@ TEST_CASE("Big possibility of deadlock-1") {
                 std::unique_lock l1(m3);
                 std::unique_lock l2(m4);
             } catch(deadlock_exception &) {
+                ++counter;
             }
         }
     });
@@ -83,6 +88,7 @@ TEST_CASE("Big possibility of deadlock-1") {
                 std::unique_lock l1(m4);
                 std::unique_lock l2(m1);
             } catch(deadlock_exception &) {
+                ++counter;
             }
         }
     });
@@ -91,6 +97,7 @@ TEST_CASE("Big possibility of deadlock-1") {
     t2.join();
     t3.join();
     t4.join();
+    WARN(counter > 0);
 }
 
 TEST_CASE("Big possibility of deadlock-2") {
@@ -102,6 +109,7 @@ TEST_CASE("Big possibility of deadlock-2") {
         safe_mutex m2;
         safe_mutex m3;
         safe_mutex m4;
+        std::atomic<std::size_t> counter = 0;
 
         std::thread t1([&]() {
             latch.arrive_and_wait();
@@ -111,6 +119,7 @@ TEST_CASE("Big possibility of deadlock-2") {
                     std::unique_lock l2(m2);
                     std::unique_lock l3(m3);
                 } catch(deadlock_exception &) {
+                    ++counter;
                 }
             }
         });
@@ -122,6 +131,7 @@ TEST_CASE("Big possibility of deadlock-2") {
                     std::unique_lock l2(m3);
                     std::unique_lock l3(m4);
                 } catch(deadlock_exception &) {
+                    ++counter;
                 }
             }
         });
@@ -132,6 +142,7 @@ TEST_CASE("Big possibility of deadlock-2") {
                     std::unique_lock l1(m3);
                     std::unique_lock l2(m4);
                 } catch(deadlock_exception &) {
+                    ++counter;
                 }
             }
         });
@@ -142,6 +153,7 @@ TEST_CASE("Big possibility of deadlock-2") {
                     std::unique_lock l1(m4);
                     std::unique_lock l2(m1);
                 } catch(deadlock_exception &) {
+                    ++counter;
                 }
             }
         });
@@ -150,6 +162,7 @@ TEST_CASE("Big possibility of deadlock-2") {
         t2.join();
         t3.join();
         t4.join();
+        WARN(counter > 0);
     }
 }
 
@@ -172,6 +185,7 @@ TEST_CASE("No deadlocks") {
                     std::unique_lock l3(m3);
                     std::unique_lock l4(m4);
                 } catch(deadlock_exception &) {
+                    CHECK(false);
                 }
             }
         });
@@ -183,6 +197,7 @@ TEST_CASE("No deadlocks") {
                     std::unique_lock l3(m3);
                     std::unique_lock l4(m4);
                 } catch(deadlock_exception &) {
+                    CHECK(false);
                 }
             }
         });
@@ -193,6 +208,7 @@ TEST_CASE("No deadlocks") {
                     std::unique_lock l3(m3);
                     std::unique_lock l4(m4);
                 } catch(deadlock_exception &) {
+                    CHECK(false);
                 }
             }
         });
@@ -202,6 +218,7 @@ TEST_CASE("No deadlocks") {
                 try {
                     std::unique_lock l1(m4);
                 } catch(deadlock_exception &) {
+                    CHECK(false);
                 }
             }
         });
