@@ -11,8 +11,7 @@ namespace test_task {
 
 bool mutex_graph::exists_cycle(std::thread::id vertex, 
 	                           std::thread::id started_vertex, 
-	                           bool is_first_step,
-                               int depth) {
+	                           bool is_first_step) {
 	if (!is_first_step && vertex == started_vertex) {
 		return true;
 	}
@@ -22,8 +21,7 @@ bool mutex_graph::exists_cycle(std::thread::id vertex,
 	} else {
 		return exists_cycle(current_thread[current_expectation[vertex]].value(),
 			                started_vertex,
-			                false,
-                            depth + 1);
+			                false);
 	}
 }
 
