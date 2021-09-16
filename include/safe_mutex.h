@@ -28,7 +28,8 @@ private:
 
 	bool exists_cycle(std::thread::id vertex, 
 	                  std::thread::id started_vertex, 
-	                  bool is_first_step = true);
+	                  bool is_first_step = true,
+                      int depth = 0);
 	//can only be called under the mutex  
 
 public:

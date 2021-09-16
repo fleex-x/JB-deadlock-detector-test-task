@@ -11,17 +11,19 @@ namespace test_task {
 
 bool mutex_graph::exists_cycle(std::thread::id vertex, 
 	                           std::thread::id started_vertex, 
-	                           bool is_first_step	) {
+	                           bool is_first_step,
+                               int depth) {
 	if (!is_first_step && vertex == started_vertex) {
 		return true;
 	}
-	if (current_expectation[vertex] == 0 || 
-		!current_thread[current_expectation[vertex]].has_value()) {
+	if (current_expectation.count(vertex) == 0 || 
+		current_thread[current_expectation[vertex]].has_value()) {
 		return false;
 	} else {
 		return exists_cycle(current_thread[current_expectation[vertex]].value(),
 			                started_vertex,
-			                false);
+			                false,
+                            depth + 1);
 	}
 }
 
@@ -30,7 +32,7 @@ void mutex_graph::add_new_expectation(std::thread::id thread_id, std::uint64_t m
 	current_expectation[thread_id] = mutex_id;
 	if (exists_cycle(thread_id, thread_id)) {
         #ifdef SAFE_MUTEX_TESTS_
-    	   throw std::runtime_error("Deadlock is discovered");
+    	   throw deadlock_exception("Deadlock is discovered");
         #else
             std::cerr << "Deadlock is discovered" << std::endl;
             std::exit(1);
@@ -40,7 +42,7 @@ void mutex_graph::add_new_expectation(std::thread::id thread_id, std::uint64_t m
 
 void mutex_graph::delete_expectation_and_add_new_locked_mutex(std::thread::id thread_id, std::uint64_t mutex_id) {
 	std::unique_lock l(m);
-	current_expectation[thread_id] = 0;
+	current_expectation.erase(thread_id);
 	current_thread[mutex_id] = thread_id;
 }
 
