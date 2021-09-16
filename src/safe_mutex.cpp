@@ -17,7 +17,7 @@ bool mutex_graph::exists_cycle(std::thread::id vertex,
 		return true;
 	}
 	if (current_expectation.count(vertex) == 0 || 
-		current_thread[current_expectation[vertex]].has_value()) {
+		!current_thread[current_expectation[vertex]].has_value()) {
 		return false;
 	} else {
 		return exists_cycle(current_thread[current_expectation[vertex]].value(),
@@ -31,6 +31,7 @@ void mutex_graph::add_new_expectation(std::thread::id thread_id, std::uint64_t m
 	std::unique_lock l(m);
 	current_expectation[thread_id] = mutex_id;
 	if (exists_cycle(thread_id, thread_id)) {
+        current_expectation.erase(thread_id);
         #ifdef SAFE_MUTEX_TESTS_
     	   throw deadlock_exception("Deadlock is discovered");
         #else
