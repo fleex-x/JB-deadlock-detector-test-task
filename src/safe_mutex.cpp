@@ -16,7 +16,7 @@ bool mutex_graph::exists_cycle(std::thread::id vertex,
         return true;
     }
     if (current_expectation.count(vertex) == 0 || 
-        !current_thread[current_expectation[vertex]].has_value()) {
+        current_thread.count(current_expectation[vertex]) == 0) {
         return false;
     } else {
         return exists_cycle(current_thread[current_expectation[vertex]].value(),
@@ -47,10 +47,18 @@ void mutex_graph::delete_expectation_and_add_new_locked_mutex(std::thread::id th
 
 void mutex_graph::delete_locked_mutex(std::uint64_t mutex_id) {
     std::unique_lock l(m);
-    current_thread[mutex_id].reset();
+    current_thread.erase(mutex_id);
 }
 
-safe_mutex::safe_mutex() : this_mutex_id(mutex_counter++) {
+multithread_counter::multithread_counter(std::uint64_t counter_) : counter(counter_) {
+}
+
+std::uint64_t multithread_counter::get_next_value() {
+    std::unique_lock l(m);
+    return counter++;
+}
+
+safe_mutex::safe_mutex() : this_mutex_id(mutex_counter.get_next_value()) {
 }
 
 void safe_mutex::lock() {

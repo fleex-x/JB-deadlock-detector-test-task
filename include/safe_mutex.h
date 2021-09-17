@@ -37,10 +37,19 @@ public:
     void delete_locked_mutex(std::uint64_t mutex_id);
 };
 
+class multithread_counter {
+private:
+    std::uint64_t counter = 0;
+    std::mutex m;
+public:
+    multithread_counter (std::uint64_t counter_);
+    std::uint64_t get_next_value();
+};
+
 class safe_mutex {
 private:
     inline static mutex_graph thread_dependencies;
-    inline static std::atomic<std::uint64_t> mutex_counter = 1;
+    inline static multithread_counter mutex_counter{1}; 
     const std::uint64_t this_mutex_id; 
     std::mutex m;
 public:

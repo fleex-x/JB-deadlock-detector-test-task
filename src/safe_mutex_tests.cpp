@@ -12,6 +12,7 @@ using test_task::deadlock_exception;
 
 namespace {
 class latch {
+private:
     std::mutex m;
     int counter;
     std::condition_variable counter_changed;
@@ -32,6 +33,11 @@ public:
 TEST_CASE("Small test without deadlocks") {
     safe_mutex m;
     std::unique_lock l(m);
+    l.unlock();
+    l.lock();
+    l.unlock();
+    l.lock();
+    l.unlock();
 }
 
 TEST_CASE("Re-lock in the same thread") {
