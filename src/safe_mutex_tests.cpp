@@ -37,7 +37,7 @@ TEST_CASE("Small test without deadlocks") {
 TEST_CASE("Re-lock in the same thread") {
     safe_mutex m;
     std::unique_lock l1(m);
-    CHECK_THROWS_AS(std::unique_lock l2(m), deadlock_exception);
+    CHECK_THROWS_AS(m.lock(), deadlock_exception);
 }
 
 TEST_CASE("High probability of deadlock-1") {
@@ -80,7 +80,7 @@ TEST_CASE("High probability of deadlock-1") {
             } catch(deadlock_exception &) {
                 ++counter;
             }
-        }x`
+        }
     });
     std::thread t4([&]() {
         latch.arrive_and_wait();
