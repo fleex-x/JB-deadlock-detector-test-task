@@ -18,3 +18,7 @@ add_executable(safe-mutex-tests src/safe_mutex.cpp
                                 src/doctest_main.cpp)
 target_compile_options(safe-mutex-tests PUBLIC -DSAFE_MUTEX_TESTS_)
 target_link_libraries(safe-mutex-tests ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(deadlock-main src/safe_mutex.cpp 
+                             src/deadlock_main.cpp)
+target_link_libraries(deadlock-main ${CMAKE_THREAD_LIBS_INIT})
