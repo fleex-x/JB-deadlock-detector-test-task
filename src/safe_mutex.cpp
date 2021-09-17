@@ -64,11 +64,13 @@ safe_mutex::safe_mutex() : this_mutex_id(mutex_counter.get_next_value()) {
 void safe_mutex::lock() {
     thread_dependencies.add_new_expectation(std::this_thread::get_id(), this_mutex_id);
     m.lock();
+    //check note1
     thread_dependencies.delete_expectation_and_add_new_locked_mutex(std::this_thread::get_id(), this_mutex_id);
 }
 
 void safe_mutex::unlock() {
     thread_dependencies.delete_locked_mutex(this_mutex_id);
+    //check note2
     m.unlock();
 }
 
