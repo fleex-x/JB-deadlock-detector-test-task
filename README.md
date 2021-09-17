@@ -7,7 +7,7 @@
 ## Сборка
 
 ```
-https://github.com/fleex-x/JB-deadlock-detector-test-task.git
+git clone https://github.com/fleex-x/JB-deadlock-detector-test-task.git
 cd JB-deadlock-detector-test-task
 cmake .
 make
