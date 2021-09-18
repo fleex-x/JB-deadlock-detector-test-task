@@ -5,6 +5,7 @@
 #include <thread>
 #include <vector>
 #include "doctest.h"
+#include <iostream>
 
 
 using test_task::safe_mutex;
@@ -183,6 +184,7 @@ TEST_CASE("No deadlocks, common data") {
         safe_mutex m3;
         safe_mutex m4;
         std::vector <int> common_vec;
+        std::atomic <std::size_t> counter = 0;
 
         std::thread t1([&]() {
             latch.arrive_and_wait();
@@ -194,7 +196,7 @@ TEST_CASE("No deadlocks, common data") {
                     std::unique_lock l4(m4);
                     common_vec.push_back(i);
                 } catch(deadlock_exception &) {
-                    CHECK(false);
+                    ++counter;
                 }
             }
         });
@@ -207,7 +209,7 @@ TEST_CASE("No deadlocks, common data") {
                     std::unique_lock l4(m4);
                     common_vec.push_back(i);
                 } catch(deadlock_exception &) {
-                    CHECK(false);
+                    ++counter;
                 }
             }
         });
@@ -219,7 +221,7 @@ TEST_CASE("No deadlocks, common data") {
                     std::unique_lock l4(m4);
                     common_vec.push_back(i);
                 } catch(deadlock_exception &) {
-                    CHECK(false);
+                    ++counter;
                 }
             }
         });
@@ -230,7 +232,7 @@ TEST_CASE("No deadlocks, common data") {
                     std::unique_lock l1(m4);
                     common_vec.push_back(i);
                 } catch(deadlock_exception &) {
-                    CHECK(false);
+                    ++counter;
                 }
             }
         });
@@ -239,5 +241,6 @@ TEST_CASE("No deadlocks, common data") {
         t2.join();
         t3.join();
         t4.join();
+        CHECK(counter == 0);
     }
 }
