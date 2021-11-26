@@ -1,3 +1,21 @@
+# Test task for an autumn Jet-Brains the project "Deadlock detector in debugger" 
+
+Developed a safe-mutex -- a wrapper over the mutex that can allow deadlocks to be defined as they happen. How does it work: at any time the program supports a
+directed graph in which the vertexes are threads, the existence of an edge a-> b is equivalent to the fact that thread a holds a mutex that blocks thread b. The existence of a cycle in such a graph is equivalent to the existence of a deadlock in the program.
+
+## project's building
+
+```
+git clone https://github.com/fleex-x/JB-deadlock-detector-test-task.git
+cd JB-deadlock-detector-test-task
+cmake .
+make
+./safe-mutex-tests
+./deadlock-main
+```
+
+
+
 # Тестовое задание для проекта "Детектор взаимных блокировок (deadlock) в отладчике"
 
 1. [Сборка](#Сборка)
