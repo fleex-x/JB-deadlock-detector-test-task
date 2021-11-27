@@ -1,7 +1,7 @@
 # Test task for the autumn Jet-Brains project "Deadlock detector in the debugger" 
 
-Developed a safe-mutex -- a wrapper over the std::mutex that can allow deadlocks to be defined as they happen. How does it work: at any time the program supports a
-directed graph in which the vertexes are threads, the existence of an edge a-> b is equivalent to the fact that thread a holds a mutex that blocks thread b. The existence of a cycle in such a graph is equivalent to the existence of a deadlock in the program.
+Developed a safe-mutex -- a wrapper over the std::mutex that can allow deadlocks to be defined as they happen. How does it work: at any time the program maintains a
+directed graph in which the vertexes are threads, the existence of an edge A -> B is equivalent to the fact that the thread A is holding a mutex, which is blocking thread B. The existence of a cycle in such a graph is equivalent to the existence of a deadlock in the program.
 
 ## project's building
 
